@@ -1,10 +1,33 @@
-const cfg =
-  CONFIG;
+// ============================================================
+// Personal Dashboard
+// app.js
+// ============================================================
+
+const cfg = CONFIG;
 
 
-// ==========================================================
+// ============================================================
+// 教材库链接
+// ============================================================
+
+const libraryBtn =
+  document.getElementById("libraryBtn");
+
+if (
+  libraryBtn &&
+  cfg.TEXTBOOK_LIBRARY_URL
+) {
+
+  libraryBtn.href =
+    cfg.TEXTBOOK_LIBRARY_URL;
+
+}
+
+
+
+// ============================================================
 // 时间
-// ==========================================================
+// ============================================================
 
 function updateClocks() {
 
@@ -12,12 +35,12 @@ function updateClocks() {
     new Date();
 
 
-  // --------------------------------------------------------
-  // 顶部：设备自己的当地时间
-  // --------------------------------------------------------
+  // ========================================================
+  // 顶部：
+  // 使用手机 / 电脑自己的系统时区
+  // ========================================================
 
   const localTime =
-
     new Intl.DateTimeFormat(
       "zh-CN",
       {
@@ -31,13 +54,10 @@ function updateClocks() {
           false
       }
     )
-    .format(
-      now
-    );
+    .format(now);
 
 
   const localDate =
-
     new Intl.DateTimeFormat(
       "zh-CN",
       {
@@ -51,34 +71,43 @@ function updateClocks() {
           "short"
       }
     )
-    .format(
-      now
+    .format(now);
+
+
+  const todayText =
+    document.getElementById(
+      "todayText"
     );
 
 
-  document
-    .getElementById(
-      "todayText"
-    )
-    .textContent =
+  const topTime =
+    document.getElementById(
+      "tokyoTime"
+    );
+
+
+  if (todayText) {
+
+    todayText.textContent =
       localDate;
 
+  }
 
-  document
-    .getElementById(
-      "tokyoTime"
-    )
-    .textContent =
+
+  if (topTime) {
+
+    topTime.textContent =
       `本机 ${localTime}`;
 
+  }
 
 
-  // --------------------------------------------------------
+
+  // ========================================================
   // Tokyo
-  // --------------------------------------------------------
+  // ========================================================
 
   const tokyoTime =
-
     new Intl.DateTimeFormat(
       "zh-CN",
       {
@@ -95,13 +124,10 @@ function updateClocks() {
           false
       }
     )
-    .format(
-      now
-    );
+    .format(now);
 
 
   const tokyoDate =
-
     new Intl.DateTimeFormat(
       "zh-CN",
       {
@@ -118,34 +144,44 @@ function updateClocks() {
           "short"
       }
     )
-    .format(
-      now
+    .format(now);
+
+
+  const tokyoClock =
+    document.getElementById(
+      "tokyoClock"
     );
 
 
-  document
-    .getElementById(
-      "tokyoClock"
-    )
-    .textContent =
+  const tokyoDateElement =
+    document.getElementById(
+      "tokyoDate"
+    );
+
+
+  if (tokyoClock) {
+
+    tokyoClock.textContent =
       tokyoTime;
 
+  }
 
-  document
-    .getElementById(
-      "tokyoDate"
-    )
-    .textContent =
+
+  if (tokyoDateElement) {
+
+    tokyoDateElement.textContent =
       tokyoDate;
 
+  }
 
 
-  // --------------------------------------------------------
-  // London
-  // --------------------------------------------------------
+
+  // ========================================================
+  // London, Ontario
+  // 自动处理 EST / EDT
+  // ========================================================
 
   const londonTime =
-
     new Intl.DateTimeFormat(
       "zh-CN",
       {
@@ -162,13 +198,10 @@ function updateClocks() {
           false
       }
     )
-    .format(
-      now
-    );
+    .format(now);
 
 
   const londonDate =
-
     new Intl.DateTimeFormat(
       "zh-CN",
       {
@@ -185,25 +218,35 @@ function updateClocks() {
           "short"
       }
     )
-    .format(
-      now
+    .format(now);
+
+
+  const londonClock =
+    document.getElementById(
+      "londonClock"
     );
 
 
-  document
-    .getElementById(
-      "londonClock"
-    )
-    .textContent =
+  const londonDateElement =
+    document.getElementById(
+      "londonDate"
+    );
+
+
+  if (londonClock) {
+
+    londonClock.textContent =
       londonTime;
 
+  }
 
-  document
-    .getElementById(
-      "londonDate"
-    )
-    .textContent =
+
+  if (londonDateElement) {
+
+    londonDateElement.textContent =
       londonDate;
+
+  }
 
 }
 
@@ -211,6 +254,7 @@ function updateClocks() {
 updateClocks();
 
 
+// 每 30 秒更新时钟
 setInterval(
   updateClocks,
   30000
@@ -218,9 +262,9 @@ setInterval(
 
 
 
-// ==========================================================
-// 回家
-// ==========================================================
+// ============================================================
+// 回家导航
+// ============================================================
 
 const HOME_ADDRESS_KEY =
   "dashboard.homeAddress";
@@ -260,6 +304,28 @@ const homeStatus =
   );
 
 
+const goHomeBtn =
+  document.getElementById(
+    "goHomeBtn"
+  );
+
+
+const editHomeBtn =
+  document.getElementById(
+    "editHomeBtn"
+  );
+
+
+const clearHomeBtn =
+  document.getElementById(
+    "clearHomeBtn"
+  );
+
+
+
+// ============================================================
+// 获取家庭地址
+// ============================================================
 
 function getHome() {
 
@@ -272,6 +338,11 @@ function getHome() {
 }
 
 
+
+// ============================================================
+// 获取地图提供商
+// ============================================================
+
 function getProvider() {
 
   return (
@@ -283,20 +354,54 @@ function getProvider() {
 }
 
 
+
+// ============================================================
+// 更新“回家”状态
+// ============================================================
+
 function refreshHomeStatus() {
 
-  homeStatus.textContent =
+  if (!homeStatus) {
 
-    getHome()
+    return;
 
-      ? "地址已保存在这台设备。"
+  }
 
-      : "第一次使用请设置家的地址。";
+
+  if (getHome()) {
+
+    homeStatus.textContent =
+      "地址已保存在这台设备。";
+
+  }
+
+  else {
+
+    homeStatus.textContent =
+      "第一次使用请设置家的地址。";
+
+  }
 
 }
 
 
+
+// ============================================================
+// 打开设置
+// ============================================================
+
 function openHomeSettings() {
+
+  if (
+    !homeDialog ||
+    !homeAddress ||
+    !mapProvider
+  ) {
+
+    return;
+
+  }
+
 
   homeAddress.value =
     getHome();
@@ -306,10 +411,22 @@ function openHomeSettings() {
     getProvider();
 
 
-  homeDialog.showModal();
+  if (
+    typeof homeDialog.showModal ===
+    "function"
+  ) {
+
+    homeDialog.showModal();
+
+  }
 
 }
 
+
+
+// ============================================================
+// 一键导航回家
+// ============================================================
 
 function navigateHome() {
 
@@ -317,9 +434,7 @@ function navigateHome() {
     getHome();
 
 
-  if (
-    !address
-  ) {
+  if (!address) {
 
     openHomeSettings();
 
@@ -334,18 +449,25 @@ function navigateHome() {
     );
 
 
-  const url =
+  let url;
 
+
+  if (
     getProvider() ===
     "apple"
+  ) {
 
-      ?
+    url =
+      `https://maps.apple.com/?daddr=${encoded}&dirflg=d`;
 
-      `https://maps.apple.com/?daddr=${encoded}&dirflg=d`
+  }
 
-      :
+  else {
 
+    url =
       `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+
+  }
 
 
   window.open(
@@ -357,85 +479,114 @@ function navigateHome() {
 }
 
 
-document
-  .getElementById(
-    "editHomeBtn"
-  )
-  .addEventListener(
+
+// ============================================================
+// 回家按钮事件
+// ============================================================
+
+if (editHomeBtn) {
+
+  editHomeBtn.addEventListener(
     "click",
     openHomeSettings
   );
 
+}
 
-document
-  .getElementById(
-    "goHomeBtn"
-  )
-  .addEventListener(
+
+if (goHomeBtn) {
+
+  goHomeBtn.addEventListener(
     "click",
     navigateHome
   );
 
-
-homeForm.addEventListener(
-  "submit",
-  event => {
+}
 
 
-    if (
-      event.submitter?.value !==
-      "save"
-    ) {
 
-      return;
+// ============================================================
+// 保存家庭地址
+// ============================================================
+
+if (homeForm) {
+
+  homeForm.addEventListener(
+    "submit",
+    event => {
+
+
+      // 如果不是“保存”按钮
+      // 比如点 X 关闭
+      if (
+        event.submitter?.value !==
+        "save"
+      ) {
+
+        return;
+
+      }
+
+
+      event.preventDefault();
+
+
+      const value =
+        homeAddress
+          ? homeAddress.value.trim()
+          : "";
+
+
+      if (!value) {
+
+        if (homeAddress) {
+
+          homeAddress.focus();
+
+        }
+
+        return;
+
+      }
+
+
+      localStorage.setItem(
+        HOME_ADDRESS_KEY,
+        value
+      );
+
+
+      localStorage.setItem(
+        MAP_PROVIDER_KEY,
+        mapProvider
+          ? mapProvider.value
+          : "google"
+      );
+
+
+      if (homeDialog) {
+
+        homeDialog.close();
+
+      }
+
+
+      refreshHomeStatus();
 
     }
+  );
+
+}
 
 
-    event.preventDefault();
 
+// ============================================================
+// 清除家庭地址
+// ============================================================
 
-    const value =
-      homeAddress.value.trim();
+if (clearHomeBtn) {
 
-
-    if (
-      !value
-    ) {
-
-      homeAddress.focus();
-
-      return;
-
-    }
-
-
-    localStorage.setItem(
-      HOME_ADDRESS_KEY,
-      value
-    );
-
-
-    localStorage.setItem(
-      MAP_PROVIDER_KEY,
-      mapProvider.value
-    );
-
-
-    homeDialog.close();
-
-
-    refreshHomeStatus();
-
-  }
-);
-
-
-document
-  .getElementById(
-    "clearHomeBtn"
-  )
-  .addEventListener(
+  clearHomeBtn.addEventListener(
     "click",
     () => {
 
@@ -450,7 +601,27 @@ document
       );
 
 
-      homeDialog.close();
+      if (homeAddress) {
+
+        homeAddress.value =
+          "";
+
+      }
+
+
+      if (mapProvider) {
+
+        mapProvider.value =
+          "google";
+
+      }
+
+
+      if (homeDialog) {
+
+        homeDialog.close();
+
+      }
 
 
       refreshHomeStatus();
@@ -458,14 +629,16 @@ document
     }
   );
 
+}
+
 
 refreshHomeStatus();
 
 
 
-// ==========================================================
-// 公交
-// ==========================================================
+// ============================================================
+// 实时公交
+// ============================================================
 
 const arrivalsEl =
   document.getElementById(
@@ -473,39 +646,39 @@ const arrivalsEl =
   );
 
 
-const statusEl =
+const transitStatus =
   document.getElementById(
     "transitStatus"
   );
 
 
-const updatedEl =
+const updatedAt =
   document.getElementById(
     "updatedAt"
   );
 
 
-const refreshBtn =
+const refreshTransit =
   document.getElementById(
     "refreshTransit"
   );
 
 
 
-// ==========================================================
-// HTML escape
-// ==========================================================
+// ============================================================
+// HTML 转义
+// ============================================================
 
 function escapeHtml(
-  text = ""
+  value = ""
 ) {
 
-  return String(text)
+  return String(value)
     .replace(
 
       /[&<>"']/g,
 
-      char => ({
+      character => ({
 
         "&":
           "&amp;",
@@ -522,7 +695,7 @@ function escapeHtml(
         "'":
           "&#039;"
 
-      }[char])
+      }[character])
 
     );
 
@@ -530,23 +703,47 @@ function escapeHtml(
 
 
 
-// ==========================================================
-// 获取所有要查询的 Stop ID
-// ==========================================================
+// ============================================================
+// 获取所有需要请求的 Stop ID
+//
+// 根据 config.js 的 BUS_GROUPS 自动生成
+// ============================================================
 
 function getAllStopIds() {
+
+  if (
+    !Array.isArray(
+      cfg.BUS_GROUPS
+    )
+  ) {
+
+    throw new Error(
+      "config.js 中没有找到 BUS_GROUPS"
+    );
+
+  }
+
+
+  const ids =
+    cfg.BUS_GROUPS.flatMap(
+
+      group =>
+
+        Array.isArray(
+          group.stopIds
+        )
+
+          ? group.stopIds
+
+          : []
+
+    );
+
 
   return [
 
     ...new Set(
-
-      cfg.BUS_GROUPS.flatMap(
-
-        group =>
-          group.stopIds || []
-
-      )
-
+      ids.map(String)
     )
 
   ];
@@ -555,9 +752,16 @@ function getAllStopIds() {
 
 
 
-// ==========================================================
-// 判断 HeadSign 是否符合
-// ==========================================================
+// ============================================================
+// 判断公交 headsign 是否符合这一组
+//
+// 例如：
+//
+// Fanshawe College via Downtown
+//
+// 能匹配：
+// "Fanshawe"
+// ============================================================
 
 function matchesHeadsign(
   arrival,
@@ -565,7 +769,9 @@ function matchesHeadsign(
 ) {
 
   if (
-    !group.headsignIncludes ||
+    !Array.isArray(
+      group.headsignIncludes
+    ) ||
     group.headsignIncludes.length === 0
   ) {
 
@@ -575,7 +781,6 @@ function matchesHeadsign(
 
 
   const headsign =
-
     String(
       arrival.headsign || ""
     )
@@ -589,8 +794,10 @@ function matchesHeadsign(
       keyword =>
 
         headsign.includes(
+
           String(keyword)
             .toLowerCase()
+
         )
 
     );
@@ -599,9 +806,9 @@ function matchesHeadsign(
 
 
 
-// ==========================================================
-// 某一个方向的班次
-// ==========================================================
+// ============================================================
+// 获取某一个方向对应的公交
+// ============================================================
 
 function getGroupArrivals(
   allArrivals,
@@ -611,35 +818,36 @@ function getGroupArrivals(
   return allArrivals
 
     .filter(
-
       item => {
 
 
+        // 路线
         const routeMatches =
 
-          String(
-            item.route
-          )
-
-          ===
-
-          String(
-            group.route
-          );
+          String(item.route) ===
+          String(group.route);
 
 
+        // 站点
         const stopMatches =
 
-          group.stopIds.includes(
+          Array.isArray(
+            group.stopIds
+          )
 
-            String(
-              item.stopId
-            )
+          &&
 
-          );
+          group.stopIds
+            .map(String)
+            .includes(
+              String(
+                item.stopId
+              )
+            );
 
 
-        const directionMatches =
+        // 方向
+        const headsignMatches =
 
           matchesHeadsign(
             item,
@@ -650,17 +858,15 @@ function getGroupArrivals(
         return (
 
           routeMatches &&
-
           stopMatches &&
-
-          directionMatches
+          headsignMatches
 
         );
 
       }
-
     )
 
+    // 时间排序
     .sort(
 
       (
@@ -668,11 +874,12 @@ function getGroupArrivals(
         b
       ) =>
 
-        a.minutes -
-        b.minutes
+        Number(a.minutes) -
+        Number(b.minutes)
 
     )
 
+    // 首页每个方向显示最近三班
     .slice(
       0,
       3
@@ -682,21 +889,49 @@ function getGroupArrivals(
 
 
 
-// ==========================================================
-// 时间 Chip
-// ==========================================================
+// ============================================================
+// 渲染一个到站时间
+// ============================================================
 
 function renderTimeChip(
   item
 ) {
 
-  const timeText =
+  const minutes =
+    Number(
+      item.minutes
+    );
 
-    item.minutes <= 0
 
-      ? "到站"
+  let timeText;
 
-      : `${item.minutes} min`;
+
+  if (
+    !Number.isFinite(
+      minutes
+    )
+  ) {
+
+    timeText =
+      "--";
+
+  }
+
+  else if (
+    minutes <= 0
+  ) {
+
+    timeText =
+      "到站";
+
+  }
+
+  else {
+
+    timeText =
+      `${minutes} min`;
+
+  }
 
 
   const realtime =
@@ -706,7 +941,11 @@ function renderTimeChip(
   return `
 
     <div
-      class="bus-time-chip ${realtime ? "live" : "scheduled"}"
+      class="bus-time-chip ${
+        realtime
+          ? "live"
+          : "scheduled"
+      }"
     >
 
       <strong>
@@ -731,13 +970,33 @@ function renderTimeChip(
 
 
 
-// ==========================================================
-// 渲染公交方向
-// ==========================================================
+// ============================================================
+// 渲染公交方向卡片
+// ============================================================
 
 function renderTransitGroups(
   allArrivals
 ) {
+
+  if (!arrivalsEl) {
+
+    return;
+
+  }
+
+
+  if (
+    !Array.isArray(
+      cfg.BUS_GROUPS
+    )
+  ) {
+
+    throw new Error(
+      "config.js 中 BUS_GROUPS 格式错误"
+    );
+
+  }
+
 
   arrivalsEl.innerHTML =
 
@@ -747,7 +1006,6 @@ function renderTransitGroups(
 
 
           const arrivals =
-
             getGroupArrivals(
 
               allArrivals,
@@ -760,10 +1018,13 @@ function renderTransitGroups(
           let timesHtml;
 
 
+          // ==================================================
+          // 有公交
+          // ==================================================
+
           if (
             arrivals.length > 0
           ) {
-
 
             timesHtml =
 
@@ -773,11 +1034,14 @@ function renderTransitGroups(
                 )
                 .join("");
 
-
           }
 
-          else {
 
+          // ==================================================
+          // 暂时没有车
+          // ==================================================
+
+          else {
 
             timesHtml = `
 
@@ -792,46 +1056,75 @@ function renderTransitGroups(
           }
 
 
-          const firstHeadsign =
+          // 第一班车的真正 headsign
+          const realHeadsign =
 
-            arrivals[0]?.headsign || "";
+            arrivals.length > 0
+
+              ? (
+                  arrivals[0]
+                    .headsign || ""
+                )
+
+              : "";
 
 
           return `
 
             <section class="bus-direction">
 
-              <div class="bus-direction-head">
 
-                <div class="bus-route">
+              <div
+                class="bus-direction-head"
+              >
 
-                  ${escapeHtml(group.route)}
+
+                <div
+                  class="bus-route"
+                >
+
+                  ${escapeHtml(
+                    group.route
+                  )}
 
                 </div>
 
 
-                <div class="bus-direction-info">
+                <div
+                  class="bus-direction-info"
+                >
+
 
                   <strong>
 
-                    ${escapeHtml(group.title)}
+                    ${escapeHtml(
+                      group.title
+                    )}
 
                   </strong>
 
+
                   <small>
 
-                    ${escapeHtml(group.subtitle)}
+                    ${escapeHtml(
+                      group.subtitle || ""
+                    )}
 
                   </small>
 
+
                   ${
-                    firstHeadsign
+                    realHeadsign
 
                       ? `
 
-                        <span class="bus-headsign">
+                        <span
+                          class="bus-headsign"
+                        >
 
-                          ${escapeHtml(firstHeadsign)}
+                          ${escapeHtml(
+                            realHeadsign
+                          )}
 
                         </span>
 
@@ -840,16 +1133,21 @@ function renderTransitGroups(
                       : ""
                   }
 
+
                 </div>
+
 
               </div>
 
 
-              <div class="bus-times">
+              <div
+                class="bus-times"
+              >
 
                 ${timesHtml}
 
               </div>
+
 
             </section>
 
@@ -863,14 +1161,15 @@ function renderTransitGroups(
 
 
 
-// ==========================================================
-// 加载公交
-// ==========================================================
+// ============================================================
+// 加载实时公交
+// ============================================================
 
 async function loadTransit() {
 
   if (
-    !cfg.TRANSIT_API_URL
+    !transitStatus ||
+    !arrivalsEl
   ) {
 
     return;
@@ -878,65 +1177,171 @@ async function loadTransit() {
   }
 
 
-  refreshBtn.classList.add(
-    "spinning"
-  );
+  // ========================================================
+  // 刷新动画
+  // ========================================================
+
+  if (refreshTransit) {
+
+    refreshTransit
+      .classList
+      .add(
+        "spinning"
+      );
+
+  }
 
 
-  statusEl.textContent =
+  transitStatus.textContent =
     "正在更新实时公交…";
 
 
   try {
 
 
+    // ======================================================
+    // 检查 API 地址
+    // ======================================================
+
+    if (
+      !cfg.TRANSIT_API_URL
+    ) {
+
+      throw new Error(
+        "config.js 中没有 TRANSIT_API_URL"
+      );
+
+    }
+
+
+    // ======================================================
+    // 获取需要查询的站
+    // ======================================================
+
     const stopIds =
       getAllStopIds();
 
 
+    if (
+      stopIds.length === 0
+    ) {
+
+      throw new Error(
+        "config.js 中没有配置公交站"
+      );
+
+    }
+
+
+    // ======================================================
+    // Worker 地址
+    // ======================================================
+
+    const workerBase =
+
+      String(
+        cfg.TRANSIT_API_URL
+      )
+      .replace(
+        /\/+$/,
+        ""
+      );
+
+
     const apiUrl =
 
-      cfg.TRANSIT_API_URL
-        .replace(
-          /\/$/,
-          ""
-        )
+      `${workerBase}/arrivals?stops=` +
 
-      +
+      encodeURIComponent(
+        stopIds.join(",")
+      );
 
-      `/arrivals?stops=${encodeURIComponent(stopIds.join(","))}`;
 
+    console.log(
+      "Transit API URL:",
+      apiUrl
+    );
+
+
+    // ======================================================
+    // 请求 Worker
+    // ======================================================
 
     const response =
-
       await fetch(
 
         apiUrl,
 
         {
+
           cache:
             "no-store"
+
         }
 
       );
 
 
+    // ======================================================
+    // Worker 返回错误
+    // ======================================================
+
     if (
       !response.ok
     ) {
 
+      const text =
+        await response.text();
+
+
       throw new Error(
 
-        `HTTP ${response.status}`
+        `Worker HTTP ${response.status}: ${text}`
 
       );
 
     }
 
 
+    // ======================================================
+    // 读取 JSON
+    // ======================================================
+
     const data =
       await response.json();
 
+
+    console.log(
+      "Transit API Response:",
+      data
+    );
+
+
+    // ======================================================
+    // Worker 自己返回 error
+    // ======================================================
+
+    if (
+      data &&
+      data.error
+    ) {
+
+      throw new Error(
+
+        data.detail
+
+          ? `${data.error}: ${data.detail}`
+
+          : data.error
+
+      );
+
+    }
+
+
+    // ======================================================
+    // Arrivals
+    // ======================================================
 
     const arrivals =
 
@@ -944,72 +1349,106 @@ async function loadTransit() {
         data.arrivals
       )
 
-      ? data.arrivals
+        ? data.arrivals
 
-      : [];
+        : [];
 
+
+    // ======================================================
+    // 渲染
+    // ======================================================
 
     renderTransitGroups(
       arrivals
     );
 
 
+    // ======================================================
+    // 统计实时班次
+    // ======================================================
+
     const liveCount =
 
       arrivals.filter(
+
         item =>
           item.realtime === true
+
       ).length;
 
 
+    // ======================================================
+    // 顶部状态
+    // ======================================================
+
     if (
-      arrivals.length > 0
+      arrivals.length === 0
     ) {
 
-      statusEl.textContent =
+      transitStatus.textContent =
+        "目前没有查到即将到站车辆。";
 
-        liveCount > 0
+    }
 
-          ? `实时公交 · ${liveCount} 条实时预测`
+    else if (
+      liveCount > 0
+    ) {
 
-          : "当前显示计划时刻";
+      transitStatus.textContent =
+
+        `实时公交 · ${liveCount} 条实时预测`;
 
     }
 
     else {
 
-      statusEl.textContent =
-        "目前没有查到即将到站车辆。";
+      transitStatus.textContent =
+        "当前显示计划时刻";
 
     }
 
 
-    const updated =
+    // ======================================================
+    // 更新时间
+    // ======================================================
 
-      new Date(
-        data.generatedAt ||
-        Date.now()
-      );
+    const generatedAt =
+      data.generatedAt
+        ? new Date(
+            data.generatedAt
+          )
+        : new Date();
 
 
-    updatedEl.textContent =
+    if (updatedAt) {
 
-      `更新 ${updated.toLocaleTimeString(
-        "zh-CN",
-        {
-          hour:
-            "2-digit",
+      updatedAt.textContent =
 
-          minute:
-            "2-digit",
+        `更新 ${generatedAt.toLocaleTimeString(
 
-          second:
-            "2-digit"
-        }
-      )}`;
+          "zh-CN",
 
+          {
+            hour:
+              "2-digit",
+
+            minute:
+              "2-digit",
+
+            second:
+              "2-digit"
+          }
+
+        )}`;
+
+    }
 
   }
+
+
+  // ========================================================
+  // ERROR
+  // ========================================================
 
   catch (
     error
@@ -1017,36 +1456,55 @@ async function loadTransit() {
 
 
     console.error(
+      "Transit Error:",
       error
     );
 
 
-    statusEl.textContent =
-      "实时公交读取失败。";
+    transitStatus.textContent =
+      "实时公交读取失败";
 
 
     arrivalsEl.innerHTML = `
 
       <div class="bus-error">
 
-        无法连接实时公交 API
+        ${escapeHtml(
+          error.message ||
+          String(error)
+        )}
 
       </div>
 
     `;
 
 
-    updatedEl.textContent =
-      "连接失败";
+    if (updatedAt) {
+
+      updatedAt.textContent =
+        "连接失败";
+
+    }
 
   }
+
+
+  // ========================================================
+  // FINALLY
+  // ========================================================
 
   finally {
 
 
-    refreshBtn.classList.remove(
-      "spinning"
-    );
+    if (refreshTransit) {
+
+      refreshTransit
+        .classList
+        .remove(
+          "spinning"
+        );
+
+    }
 
   }
 
@@ -1054,21 +1512,33 @@ async function loadTransit() {
 
 
 
-// ==========================================================
-// 手动刷新
-// ==========================================================
+// ============================================================
+// 手动刷新公交
+// ============================================================
 
-refreshBtn.addEventListener(
-  "click",
-  loadTransit
-);
+if (refreshTransit) {
+
+  refreshTransit.addEventListener(
+    "click",
+    loadTransit
+  );
+
+}
 
 
-// 第一次加载
+
+// ============================================================
+// 首次加载
+// ============================================================
+
 loadTransit();
 
 
-// 每 30 秒更新
+
+// ============================================================
+// 每 30 秒自动刷新
+// ============================================================
+
 setInterval(
   loadTransit,
   30000
@@ -1076,9 +1546,9 @@ setInterval(
 
 
 
-// ==========================================================
+// ============================================================
 // Service Worker
-// ==========================================================
+// ============================================================
 
 if (
   "serviceWorker" in navigator
@@ -1088,13 +1558,21 @@ if (
     "load",
     () => {
 
+
       navigator
         .serviceWorker
         .register(
           "./sw.js"
         )
         .catch(
-          () => {}
+          error => {
+
+            console.warn(
+              "Service Worker 注册失败:",
+              error
+            );
+
+          }
         );
 
     }
