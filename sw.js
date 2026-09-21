@@ -1,5 +1,5 @@
 const CACHE =
-  "dashboard-v5";
+  "dashboard-v7";
 
 
 const ASSETS = [
