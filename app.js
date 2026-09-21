@@ -1,17 +1,94 @@
 const cfg = CONFIG;
 
 // ----- 时钟 -----
-function updateClocks(){
-  const now=new Date();
-  const fmt=(tz,opt)=>new Intl.DateTimeFormat("zh-CN",{timeZone:tz,...opt}).format(now);
-  const tokyo=fmt("Asia/Tokyo",{hour:"2-digit",minute:"2-digit",hour12:false});
-  const london=fmt("America/Toronto",{hour:"2-digit",minute:"2-digit",hour12:false});
-  document.getElementById("tokyoClock").textContent=tokyo;
-  document.getElementById("londonClock").textContent=london;
-  document.getElementById("tokyoDate").textContent=fmt("Asia/Tokyo",{month:"long",day:"numeric",weekday:"short"});
-  document.getElementById("londonDate").textContent=fmt("America/Toronto",{month:"long",day:"numeric",weekday:"short"});
-  document.getElementById("todayText").textContent=fmt("Asia/Tokyo",{month:"long",day:"numeric",weekday:"short"});
-  document.getElementById("tokyoTime").textContent=`Tokyo ${tokyo}`;
+function updateClocks() {
+
+  const now = new Date();
+
+
+  // =========================
+  // 顶部：使用设备本地时间
+  // =========================
+
+  const localTime =
+    new Intl.DateTimeFormat("zh-CN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(now);
+
+
+  const localDate =
+    new Intl.DateTimeFormat("zh-CN", {
+      month: "long",
+      day: "numeric",
+      weekday: "short"
+    }).format(now);
+
+
+  document.getElementById("todayText").textContent =
+    localDate;
+
+  document.getElementById("tokyoTime").textContent =
+    `本机 ${localTime}`;
+
+
+  // =========================
+  // Tokyo 卡片：固定东京时间
+  // =========================
+
+  const tokyoTime =
+    new Intl.DateTimeFormat("zh-CN", {
+      timeZone: "Asia/Tokyo",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(now);
+
+
+  const tokyoDate =
+    new Intl.DateTimeFormat("zh-CN", {
+      timeZone: "Asia/Tokyo",
+      month: "long",
+      day: "numeric",
+      weekday: "short"
+    }).format(now);
+
+
+  document.getElementById("tokyoClock").textContent =
+    tokyoTime;
+
+  document.getElementById("tokyoDate").textContent =
+    tokyoDate;
+
+
+  // =========================
+  // London 卡片：固定加拿大伦敦
+  // =========================
+
+  const londonTime =
+    new Intl.DateTimeFormat("zh-CN", {
+      timeZone: "America/Toronto",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(now);
+
+
+  const londonDate =
+    new Intl.DateTimeFormat("zh-CN", {
+      timeZone: "America/Toronto",
+      month: "long",
+      day: "numeric",
+      weekday: "short"
+    }).format(now);
+
+
+  document.getElementById("londonClock").textContent =
+    londonTime;
+
+  document.getElementById("londonDate").textContent =
+    londonDate;
 }
 updateClocks();
 setInterval(updateClocks,30000);
